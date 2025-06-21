@@ -1,0 +1,25 @@
+CREATE DATABASE taskmanagement;
+use taskmanagement;
+CREATE TABLE users (
+	user_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(100) NOT NULL,
+	email VARCHAR(100) NOT NULL UNIQUE,
+	pw_hash VARCHAR(255) NOT NULL,
+	created DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE tasks (
+	task_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	user_id INT UNSIGNED NOT NULL,
+	title VARCHAR(50) NOT NULL,
+	description TEXT,
+	status ENUM('not_started', 'in_progress', 'completed') NOT NULL DEFAULT 'not_started',
+	estimated_hr INT UNSIGNED,
+	due DATE,
+	priority INT,
+	created DATETIME DEFAULT CURRENT_TIMESTAMP,
+	updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	
+	CONSTRAINT fk_user_id FOREIGN KEY (user_id)
+		REFERENCES users(user_id)
+		ON DELETE CASCADE
+);

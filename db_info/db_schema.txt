@@ -1,0 +1,28 @@
+mysql> describe users;
++---------+--------------+------+-----+-------------------+-------------------+
+| Field   | Type         | Null | Key | Default           | Extra             |
++---------+--------------+------+-----+-------------------+-------------------+
+| user_id | int unsigned | NO   | PRI | NULL              | auto_increment    |
+| name    | varchar(100) | NO   |     | NULL              |                   |
+| email   | varchar(100) | NO   | UNI | NULL              |                   |
+| pw_hash | varchar(255) | NO   |     | NULL              |                   |
+| created | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
++---------+--------------+------+-----+-------------------+-------------------+
+5 rows in set (0.00 sec)
+
+mysql> describe tasks;
++--------------+-----------------------------------------------+------+-----+-------------------+-----------------------------------------------+
+| Field        | Type                                          | Null | Key | Default           | Extra                                         |
++--------------+-----------------------------------------------+------+-----+-------------------+-----------------------------------------------+
+| task_id      | int unsigned                                  | NO   | PRI | NULL              | auto_increment                                |
+| user_id      | int unsigned                                  | NO   | MUL | NULL              |                                               |
+| title        | varchar(50)                                   | NO   |     | NULL              |                                               |
+| description  | text                                          | YES  |     | NULL              |                                               |
+| status       | enum('not_started','in_progress','completed') | NO   |     | not_started       |                                               |
+| estimated_hr | int unsigned                                  | YES  |     | NULL              |                                               |
+| due          | date                                          | YES  |     | NULL              |                                               |
+| priority     | int                                           | YES  |     | NULL              |                                               |
+| created      | datetime                                      | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED                             |
+| updated      | datetime                                      | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
++--------------+-----------------------------------------------+------+-----+-------------------+-----------------------------------------------+
+10 rows in set (0.00 sec)
