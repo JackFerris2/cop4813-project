@@ -1,0 +1,23 @@
+The website is hosted on AWS in a lightsail server.
+
+Server Specs:
+
+-2 GB RAM
+-2 vCPUs
+-60 GB SSD
+
+There is a DNS Zone configured for cis4813.xyz to a static IP of 34.198.67.28
+
+The server is configured with Ubuntu:
+
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 24.04.2 LTS
+Release:        24.04
+Codename:       noble
+
+The server is running Apache2 and the website repository is at /var/www/cis4813/
+
+MySQL is installed on the server and requires you to launch it with sudo to interact with it.
+
+To login to the user, a public key from them needs to be installed into their user profile. (See add_access.txt)

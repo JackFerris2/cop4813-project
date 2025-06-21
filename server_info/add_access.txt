@@ -1,0 +1,9 @@
+Step 1: Get Public key (top of window in PuTTyGen if using PuTTy)
+Step 2: log into user account : "sudo su - alice"
+Step 3: Created ssh key dir : mkdir -p ~/.ssh
+Step 4: Change ssh folder perm : chmod 700 ~/.ssh
+Step 5: Add Key Public Key : echo "ssh-rsa AAAAB3Nza... user@example.com" >> ~/.ssh/authorized_keys
+Step 6: Add permissions : chmod 600 ~/.ssh/authorized_keys
+Step 7: Change owner of key : chown alice:alice ~/.ssh -R
+
+Current users: davis, jack, reid, ryan
