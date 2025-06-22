@@ -8,7 +8,7 @@ and eventually manage tasks. It includes a front-end interface, server-side scri
 and a working MySQL database to store and retrieve task data.
 
 This version matches the initial design and goals laid out in our system proposal
-and architecture diagram.
+and architecture diagrams.
 
 ---
 
@@ -20,6 +20,7 @@ The MVP includes multiple front-end HTML pages that allow users to interact with
 - `create-task.html` – A form to submit a new task
 - `edit-task.html` – A form to (eventually) edit existing tasks
 - `dashboard.php` – Displays all current tasks from the database
+- `create-user.html` - A form to create a new user account (not linked on any webpage)
 
 These forms are styled using Bootstrap and support real user input.
 
@@ -31,8 +32,8 @@ One complete flow is working from start to finish:
 
 1. User opens `create-task.html`
 2. They fill out the form and hit Create Task
-3. The form submits to `submit-task.php`
-4. `submit-task.php` inserts the new task into the database
+3. The form submits to `add-task.php`
+4. `add-task.php` inserts the new task into the database
 5. `dashboard.php` shows the updated list of tasks (including the new one)
 
 This demonstrates full communication between the front-end, PHP back-end, and MySQL database.
@@ -41,13 +42,14 @@ This demonstrates full communication between the front-end, PHP back-end, and My
 
 ### Database
 
-We used a MySQL database hosted on an EC2 server.
+We used a MySQL database hosted on an AWS lightsail server.
 
 - The database is named: `taskmanagement`
-- The main table used is: `tasks`
-- Tasks contain `title`, `description`, `status`, `created` and `updated` timestamps
+- The main tables used are: `users` and `tasks`
+- Users contain `user_id`, `name`, `email`, `pw_hash`, and a `created` timestamp
+- Tasks contain `task_id`, `user_id`, `title`, `description`, `status`, `estimated_hr`, `due`, `priority`, `created` and `updated` timestamps
 
-A sample dummy user (`webuser`) was created with restricted access to allow 
+A sample dummy users (`taskmanager` and `webuser`) were created with restricted access to allow 
 form submissions without compromising root credentials.
 
 ---
