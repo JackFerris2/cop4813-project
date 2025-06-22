@@ -17,6 +17,7 @@ Release:        24.04
 Codename:       noble
 
 The server is running Apache2 and the website repository is at /var/www/cis4813/
+  -The homepage was redirected in Apache2 to /mockups/dashboard/ with the .htaccess file in the repository home.
 
 MySQL is installed on the server and requires you to launch it with sudo to interact with it.
 
