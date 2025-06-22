@@ -8,25 +8,25 @@
 <body class="p-4">
 <div class="container">
     <h1>Create a New Task</h1>
-    <form>
+    <form method="POST" action="add-task.php">
         <div class="mb-3">
             <label for="taskTitle" class="form-label">Task Title</label>
-            <input type="text" class="form-control" id="taskTitle" placeholder="Enter title">
+            <input type="text" class="form-control" name="taskTitle" placeholder="Enter title">
         </div>
         <div class="mb-3">
             <label for="taskDescription" class="form-label">Description</label>
-            <textarea class="form-control" id="taskDescription" rows="4" placeholder="Enter description"></textarea>
+            <textarea class="form-control" name="taskDescription" rows="4" placeholder="Enter description"></textarea>
         </div>
         <div class="mb-3">
             <label for="taskStatus" class="form-label">Status</label>
-            <select class="form-select" id="taskStatus">
+            <select class="form-select" name="taskStatus">
                 <option value="todo">To Do</option>
                 <option value="inprogress">In Progress</option>
                 <option value="done">Done</option>
             </select>
         </div>
         <button type="submit" class="btn btn-success">Create Task</button>
-        <a href="dashboard.html" class="btn btn-secondary ms-2">Cancel</a>
+        <a href="/mockups/dashboard.html" class="btn btn-secondary ms-2">Cancel</a>
     </form>
 </div>
 </body>
