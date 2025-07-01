@@ -1,4 +1,5 @@
 <?php
+session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -28,7 +29,6 @@ while ($row = $result->fetch_assoc()) {
 
 $conn->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,6 +37,9 @@ $conn->close();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="p-4">
+
+<?php include 'navbar.php'; ?>
+
 <div class="container">
     <h1 class="mb-4">My Tasks</h1>
     <div class="row text-center">
@@ -59,8 +62,10 @@ $conn->close();
         <?php endforeach; ?>
     </div>
     <div class="text-end mt-4">
-        <a href="/mockups/create-task.html" class="btn btn-primary">+ Add Task</a>
+        <a href="/frontend/tasks/create-task.html" class="btn btn-primary">+ Add Task</a>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
