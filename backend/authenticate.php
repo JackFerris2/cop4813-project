@@ -47,18 +47,23 @@ if (!empty($email) && !empty($password)) {
 
 			// go to the dashboard.
 			header("Location: /frontend/dashboard.php");
+			exit;
 		} else {
-			echo "Invalid PW.";
+			// bad credentials redirect to login with invalid credential error
+			header("Location: /frontend/login.php?error=invalid");
+			exit;
 		}
 	} else {
-		echo "Invalid Email.";
+		header("Location: /frontend/login.php?error=invalid");
+		exit;
 	}
 	$msg->close();
     } else {
 	    echo "SQL Error" . $conn->error;
     }   
 } else {
-	echo "Email and password are required.";
+	header("Location: /frontend/login.php?error=invalid");
+	exit;
 }
 
 
