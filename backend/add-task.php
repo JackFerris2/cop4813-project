@@ -1,4 +1,11 @@
 <?php
+// active session check
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: index.html");
+    exit;
+}
+
 // DB creds
 $host = 'localhost';
 $dbname = 'taskmanagement';
@@ -15,8 +22,7 @@ if ($conn->connect_error) {
 $taskTitle = $_POST['taskTitle'] ?? '';
 $taskDescription = $_POST['taskDescription'] ?? '';
 $taskStatus = $_POST['taskStatus'] ?? '';
-
-$user_id = 1;
+$user_id = $_SESSION['user_id'] ?? '';
 
 // set status to enum in database
 if ($taskStatus === "todo") {
@@ -37,7 +43,8 @@ if (!empty($user_id) && !empty($taskTitle) && !empty($taskDescription) && !empty
         $msg->bind_param("isss", $user_id, $taskTitle, $taskDescription, $status);
 
         if ($msg->execute()) {
-            echo "Task created successfully";
+		header("Location: /frontend/dashboard.php");
+		exit;
         } else {
             echo "Database error: " . $msg->error;
         }

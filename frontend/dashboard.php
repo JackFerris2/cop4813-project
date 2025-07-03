@@ -1,12 +1,20 @@
 <?php
 session_start();
+
+session_start();
+
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: index.html");
+    exit;
+}
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 $servername = "localhost";
-$username = "webuser";
-$password = "WebPass4813!";
+$username = "taskmanager";
+$password = "password25";
 $database = "taskmanagement";
 
 $conn = new mysqli($servername, $username, $password, $database);
@@ -14,8 +22,14 @@ if ($conn->connect_error) {
     die("DB connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT * FROM tasks ORDER BY created DESC";
-$result = $conn->query($sql);
+/*$sql = "SELECT * FROM tasks WHERE user_id = ? ORDER BY created DESC";
+$sql->bind_param("i", $_SESSION['user_id']);
+$result = $conn->query($sql);*/
+
+$stmt = $conn->prepare("SELECT * FROM tasks WHERE user_id = ? ORDER BY created DESC");
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$result = $stmt->get_result();
 
 $tasks = [
     'not_started' => [],

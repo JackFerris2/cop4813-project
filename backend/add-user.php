@@ -12,9 +12,9 @@ if ($conn->connect_error) {
 }
 
 // check if fields are null
-$fullName = $_POST['fullName'] ?? '';
-$email = $_POST['email'] ?? '';
-$password = $_POST['password'] ?? '';
+$fullName = trim($_POST['fullName'] ?? '');
+$email = trim($_POST['email'] ?? '');
+$password = trim($_POST['password'] ?? '');
 
 // check if the passed information is empty
 if (!empty($fullName) && !empty($email) && !empty($password)) {
@@ -28,7 +28,8 @@ if (!empty($fullName) && !empty($email) && !empty($password)) {
         $msg->bind_param("sss", $fullName, $email, $hashPW);
 
         if ($msg->execute()) {
-            echo "User created successfully.";
+		header("Location: /frontend/login.php");
+		exit;
         } else {
             echo "Database error: " . $msg->error;
         }
