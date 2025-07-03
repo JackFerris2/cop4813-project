@@ -1,4 +1,11 @@
 <?php
+// active session check
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: /index.php");
+    exit;
+}
+
 $servername = "localhost";
 $username = "webuser";
 $password = "WebPass4813!"; // set password if needed

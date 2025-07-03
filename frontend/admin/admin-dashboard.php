@@ -1,4 +1,11 @@
-<?php session_start(); ?>
+<?php
+// active session check
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: /index.html");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,8 +21,8 @@
     <h1 class="mb-4">Admin Dashboard</h1>
     <ul class="list-group">
         <li class="list-group-item"><a href="admin-users.php">User Management</a></li>
-        <li class="list-group-item"><a href="admin-moderation.php">Content Moderation</a></li>
-        <li class="list-group-item"><a href="admin-add-task.php">Manual Task Entry</a></li>
+        <li class="list-group-item"><a href="admin-moderation.php">Task Moderation</a></li>
+        <li class="list-group-item"><a href="admin-add-task.php">Admin Task Entry</a></li>
     </ul>
 </div>
 

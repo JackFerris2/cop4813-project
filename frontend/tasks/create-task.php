@@ -1,3 +1,11 @@
+<?php
+// active session check
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: /index.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +34,7 @@
             </select>
         </div>
         <button type="submit" class="btn btn-success">Create Task</button>
-        <a href="/frontend/dashboard.html" class="btn btn-secondary ms-2">Cancel</a>
+        <a href="/frontend/dashboard.php" class="btn btn-secondary ms-2">Cancel</a>
     </form>
 </div>
 </body>

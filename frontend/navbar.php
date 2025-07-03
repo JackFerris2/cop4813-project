@@ -8,22 +8,20 @@
     <div class="collapse navbar-collapse" id="mainNavbar">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" href="/frontend/tasks/create-task.html">Add Task</a>
+          <a class="nav-link" href="/frontend/tasks/create-task.php">Add Task</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/frontend/users/create-user.html">Add User</a>
-        </li>
+        
 
         <!-- Show these links only if user is admin -->
-        <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true): ?>
+        <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == true): ?>
           <li class="nav-item">
-            <a class="nav-link" href="/frontend/admin/admin-dashboard.html">Admin Dashboard</a>
+            <a class="nav-link" href="/frontend/admin/admin-dashboard.php">Admin Dashboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/frontend/admin/admin-users.html">User Management</a>
+            <a class="nav-link" href="/frontend/admin/admin-users.php">User Management</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/frontend/admin/admin-moderation.html">Moderation</a>
+            <a class="nav-link" href="/frontend/admin/admin-moderation.php">Task Moderation</a>
           </li>
         <?php endif; ?>
 

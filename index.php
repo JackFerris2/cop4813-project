@@ -1,4 +1,11 @@
-<?php session_start(); ?>
+<?php 
+// Redirect to Dashboard if logged in.
+session_start();
+if (isset($_SESSION['logged_in']) || $_SESSION['logged_in'] == true) {
+    header("Location: /frontend/dashboard.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

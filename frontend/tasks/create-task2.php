@@ -1,3 +1,12 @@
+<?php
+// active session check
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: /index.php");
+    exit;
+}
+?>
+
 <h1>Create a New Task</h1>
 <form action="/backend/submit-task.php" method="POST">
     <div class="mb-3">

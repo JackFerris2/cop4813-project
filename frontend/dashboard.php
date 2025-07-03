@@ -1,10 +1,8 @@
 <?php
+// active session check
 session_start();
-
-session_start();
-
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: index.html");
+    header("Location: /index.php");
     exit;
 }
 
@@ -76,7 +74,7 @@ $conn->close();
         <?php endforeach; ?>
     </div>
     <div class="text-end mt-4">
-        <a href="/frontend/tasks/create-task.html" class="btn btn-primary">+ Add Task</a>
+        <a href="/frontend/tasks/create-task.php" class="btn btn-primary">+ Add Task</a>
     </div>
 </div>
 
