@@ -24,7 +24,7 @@ if ($conn->connect_error) {
 }
 
 // get user to activate/deactivate
-$userID = (int) ($_POST['user_id'] ?? 0);
+$userID = (int) $_POST['user_id'] ?? 0;
 $currentUID = (int) $_SESSION['user_id'];
 
 // check if the passed information is empty or if current user

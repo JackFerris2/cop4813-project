@@ -31,7 +31,7 @@ $result = $stmt->get_result();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>User Management</title>
+    <title>User Management</title>    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="p-4">
@@ -40,6 +40,7 @@ $result = $stmt->get_result();
 
 <div class="container">
     <h1>User Management</h1>
+    <p>You cannot deactivate or delete an account you are logged into.</p>
     <table class="table">
         <thead>
         <tr>
@@ -79,7 +80,7 @@ $result = $stmt->get_result();
 			<button type="submit" class="btn btn-primary btn-sm">Edit</button>
 		    </form>
 		<td>
-                    <form method="post" action="delete-user.php" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                    <form method="post" action="/backend/delete-user.php" style="display:inline;" onsubmit="return confirm('Are you sure?');">
                         <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['user_id']) ?>">
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>

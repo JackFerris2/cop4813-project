@@ -24,28 +24,26 @@ if ($conn->connect_error) {
 }
 
 // get user to activate/deactivate
-$userid = trim($_POST['user_id'] ?? '');
+$userID = (int) $_POST['user_id'] ?? 0;
+$currentUID = (int) $_SESSION['user_id'];
 
 // check if the passed information is empty
-if (!empty($userid)) {
+if ($userID !== 0 && $userID !== $currentUID) {
     // remove user
     $msg = $conn->prepare("DELETE FROM users WHERE user_id = ?");    
-    $msg->bind_param("i", $userid);
+    $msg->bind_param("i", $userID);
     $msg->execute();
     $msg->close();
     // Remove tasks for that user
     $msg = $conn->prepare("DELETE FROM tasks WHERE user_id = ?");    
-    $msg->bind_param("i", $userid);
+    $msg->bind_param("i", $userID);
     $msg->execute();
     $msg->close();
-    // go to admin-users
-    header("Location: /frontend/admin/admin-users.php");
-    exit;
+}
 
-    } else {
-	header("Location: /frontend/admin/admin-users.php");
-	exit;
-    }
+// go to admin-users
+header("Location: /frontend/admin/admin-users.php");
+exit;
 
 // close connection before EOF
 $conn->close();
