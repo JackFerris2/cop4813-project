@@ -10,7 +10,23 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != true) {
     header("Location: /index.php");
     exit;
 }
+
+// DB Info
+$servername = "localhost";
+$username = "taskmanager";
+$password = "password25";
+$database = "taskmanagement";
+
+$conn = new mysqli($servername, $username, $password, $database);
+if ($conn->connect_error) {
+    die("DB connection failed: " . $conn->connect_error);
+}
+
+$stmt = $conn->prepare("SELECT * FROM users ORDER BY created DESC");
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,19 +45,35 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != true) {
         <tr>
             <th>Name</th>
             <th>Email</th>
+	    <th>Admin</th>
             <th>Status</th>
             <th colspan="3">Actions</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>Jane Doe</td>
-            <td>jane@example.com</td>
-            <td>Active</td>
-            <td><button class="btn btn-warning btn-sm">Deactivate</button></td>
-            <td><button class="btn btn-primary btn-sm">Edit</button></td>
-            <td><button class="btn btn-danger btn-sm">Delete</button></td>
-        </tr>
+	<?php while ($row = $result->fetch_assoc()): ?>
+	   <tr>
+                <td><?= htmlspecialchars($row['name']) ?></td>
+                <td><?= htmlspecialchars($row['email']) ?></td>
+		<td><?= $row['admin'] ? 'Yes' : 'No' ?></td>
+		<td><?= $row['active'] ? 'Active' : 'Inactive' ?></td>
+                <td>
+                    <form method="post" action="/backend/toggle-user.php" style="display:inline;">
+                        <input type="hidden" name="email" value="<?= htmlspecialchars($row['email']) ?>">
+                        <button type="submit" class="btn btn-warning btn-sm">
+                            <?= $row['active'] ? 'Deactivate' : 'Activate' ?>
+                        </button>
+                    </form>
+                </td>
+                <td><a href="edit-user.php?email=<?= urlencode($row['email']) ?>" class="btn btn-primary btn-sm">Edit</a></td>
+                <td>
+                    <form method="post" action="delete-user.php" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                        <input type="hidden" name="email" value="<?= htmlspecialchars($row['email']) ?>">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+	<?php endwhile; ?>
         </tbody>
     </table>
 </div>
@@ -49,3 +81,6 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != true) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+<?php
+$conn->close();
+?>

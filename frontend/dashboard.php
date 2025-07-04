@@ -20,10 +20,6 @@ if ($conn->connect_error) {
     die("DB connection failed: " . $conn->connect_error);
 }
 
-/*$sql = "SELECT * FROM tasks WHERE user_id = ? ORDER BY created DESC";
-$sql->bind_param("i", $_SESSION['user_id']);
-$result = $conn->query($sql);*/
-
 $stmt = $conn->prepare("SELECT * FROM tasks WHERE user_id = ? ORDER BY created DESC");
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
