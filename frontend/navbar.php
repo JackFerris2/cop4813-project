@@ -21,7 +21,7 @@
             <a class="nav-link" href="/frontend/admin/admin-users.php">User Management</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/frontend/admin/admin-moderation.php">Task Moderation</a>
+            <a class="nav-link" href="/frontend/admin/admin-tasks.php">Task Moderation</a>
           </li>
         <?php endif; ?>
 

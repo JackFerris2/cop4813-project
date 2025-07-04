@@ -77,8 +77,8 @@ $result = $stmt->get_result();
 		    <form method="post" action="/frontend/users/edit-user.php" style="display:inline;">
 		        <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['user_id']) ?>">
 			<button type="submit" class="btn btn-primary btn-sm">Edit</button>
-			<!-- <a href="/frontend/users/edit-user.php?uid=<?= urlencode($row['user_id']) ?>" class="btn btn-primary btn-sm">Edit</a></td> -->
-                <td>
+		    </form>
+		<td>
                     <form method="post" action="delete-user.php" style="display:inline;" onsubmit="return confirm('Are you sure?');">
                         <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['user_id']) ?>">
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>

@@ -26,7 +26,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != true) {
     <h1 class="mb-4">Admin Dashboard</h1>
     <ul class="list-group">
         <li class="list-group-item"><a href="admin-users.php">User Management</a></li>
-        <li class="list-group-item"><a href="admin-moderation.php">Task Moderation</a></li>
+        <li class="list-group-item"><a href="admin-tasks.php">Task Moderation</a></li>
         <li class="list-group-item"><a href="admin-add-task.php">Admin Task Entry</a></li>
     </ul>
 </div>

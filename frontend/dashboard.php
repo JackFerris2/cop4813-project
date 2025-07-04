@@ -60,8 +60,24 @@ $conn->close();
                     <?php foreach ($tasks[$key] as $task): ?>
                         <div class="card mb-2">
                             <div class="card-body">
-                                <strong><?= htmlspecialchars($task['title']) ?></strong><br>
-                                <small><?= htmlspecialchars($task['description']) ?></small>
+				<strong>
+				    <?php
+					if($task['censor'] == True) {
+						echo "Censored";
+					} else {
+						echo htmlspecialchars($task['title']);
+					}
+				    ?>
+				</strong><br>
+				<small>
+				    <?php
+					if($task['censor'] == True) {
+						echo "This task has been censored by an administrator.";
+					} else {
+						echo htmlspecialchars($task['description']);
+					}
+				    ?>
+				</small>
                             </div>
                         </div>
                     <?php endforeach; ?>
