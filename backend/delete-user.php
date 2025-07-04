@@ -28,11 +28,15 @@ $userid = trim($_POST['user_id'] ?? '');
 
 // check if the passed information is empty
 if (!empty($userid)) {
-    // add get active status
+    // remove user
     $msg = $conn->prepare("DELETE FROM users WHERE user_id = ?");    
     $msg->bind_param("i", $userid);
     $msg->execute();
-    
+    $msg->close();
+    // Remove tasks for that user
+    $msg = $conn->prepare("DELETE FROM tasks WHERE user_id = ?");    
+    $msg->bind_param("i", $userid);
+    $msg->execute();
     $msg->close();
     // go to admin-users
     header("Location: /frontend/admin/admin-users.php");
