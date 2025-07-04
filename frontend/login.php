@@ -57,15 +57,33 @@
   </div>
 </div>
 
+<!-- Inactive Account Modal -->
+<div class="modal fade" id="inactiveModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-bg-danger">
+      <div class="modal-header">
+        <h5 class="modal-title">Account Locked</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="acctLockedMsg">
+	Your account has been locked by an administrator.
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 	// look for error in URL
 	window.addEventListener('DOMContentLoaded', () => {
 		const urlParams = new URLSearchParams(window.location.search);
 		const error = urlParams.get('error');
 
-		if (error) {
+		if (error === 'invalid') {
 			const badCreds = new bootstrap.Modal(document.getElementById("invalidCredModal"));
 			badCreds.show();
+		} else if (error === 'inactive') {
+			const lockedAccount = new bootstrap.Modal(document.getElementById("inactiveModal"));
+			lockedAccount.show();
 		}
 	});
 </script>

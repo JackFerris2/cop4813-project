@@ -20,16 +20,22 @@ $password = trim($_POST['password'] ?? '');
 // check if the passed information is empty
 if (!empty($email) && !empty($password)) {
     // add user
-    $msg = $conn->prepare("SELECT user_id, pw_hash, admin FROM users WHERE email = ?");
+    $msg = $conn->prepare("SELECT user_id, pw_hash, admin, active FROM users WHERE email = ?");
 
     if ($msg) {
 	// get stored pw    
 	$msg->bind_param("s", $email);
 	$msg->execute();
-	$msg->bind_result($user_id, $user_pwh, $user_admin);
+	$msg->bind_result($user_id, $user_pwh, $user_admin, $active);
 
 	// compare hashed pw
 	if($msg->fetch()) {
+		// check if account is active
+		if ($active == False) {
+			header("Location: /frontend/login.php?error=inactive");
+			exit;
+		}
+		
 		if (password_verify($password, $user_pwh)) {
 			// Set Session and go to dashboard
 			$_SESSION['user_id'] = $user_id;
