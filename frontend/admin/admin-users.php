@@ -22,7 +22,7 @@ if ($conn->connect_error) {
     die("DB connection failed: " . $conn->connect_error);
 }
 
-$stmt = $conn->prepare("SELECT * FROM users ORDER BY created DESC");
+$stmt = $conn->prepare("SELECT * FROM users ORDER BY name");
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
@@ -47,7 +47,7 @@ $result = $stmt->get_result();
             <th>Email</th>
 	    <th>Admin</th>
             <th>Status</th>
-            <th colspan="3">Actions</th>
+            <th colspan="4">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -59,16 +59,24 @@ $result = $stmt->get_result();
 		<td><?= $row['active'] ? 'Active' : 'Inactive' ?></td>
                 <td>
                     <form method="post" action="/backend/toggle-user.php" style="display:inline;">
-                        <input type="hidden" name="email" value="<?= htmlspecialchars($row['email']) ?>">
+                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['user_id']) ?>">
                         <button type="submit" class="btn btn-warning btn-sm">
                             <?= $row['active'] ? 'Deactivate' : 'Activate' ?>
                         </button>
                     </form>
                 </td>
-                <td><a href="edit-user.php?email=<?= urlencode($row['email']) ?>" class="btn btn-primary btn-sm">Edit</a></td>
+		<td>
+                    <form method="post" action="/backend/toggle-admin.php" style="display:inline;">
+                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['user_id']) ?>">
+                        <button type="submit" class="btn btn-warning btn-sm">
+                            <?= $row['admin'] ? 'Remove Admin' : 'Make Admin' ?>
+                        </button>
+                    </form>
+                </td>
+		<td><a href="edit-user.php?email=<?= urlencode($row['email']) ?>" class="btn btn-primary btn-sm">Edit</a></td>
                 <td>
                     <form method="post" action="delete-user.php" style="display:inline;" onsubmit="return confirm('Are you sure?');">
-                        <input type="hidden" name="email" value="<?= htmlspecialchars($row['email']) ?>">
+                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['user_id']) ?>">
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>
                 </td>
