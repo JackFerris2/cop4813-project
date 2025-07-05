@@ -115,19 +115,26 @@ document.querySelectorAll('.task-column').forEach(column => {
         const taskId = e.dataTransfer.getData("text/plain");
         const taskCard = document.querySelector(`.card[data-id='${taskId}']`);
 
-        // Only move if it's a different column
         if (!column.contains(taskCard)) {
             column.appendChild(taskCard);
         }
 
         const newStatus = column.id;
+        console.log(`Sending update: taskId=${taskId}, status=${newStatus}`);
 
         fetch('../backend/update-task-status.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `taskId=${taskId}&status=${newStatus}`
-        }).then(res => {
-            if (!res.ok) alert("Failed to update task status.");
+            body: `taskId=${encodeURIComponent(taskId)}&status=${encodeURIComponent(newStatus)}`
+        })
+        .then(response => response.text().then(text => {
+            if (!response.ok || text !== "Success") {
+                alert("Failed to update task status: " + text);
+            }
+        }))
+        .catch(error => {
+            console.error(error);
+            alert("Error contacting the server.");
         });
     });
 });
