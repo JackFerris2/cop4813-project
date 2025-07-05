@@ -122,7 +122,7 @@ document.querySelectorAll('.task-column').forEach(column => {
 
         const newStatus = column.id;
 
-        fetch('update-task-status.php', {
+        fetch('../backend/update-task-status.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `taskId=${taskId}&status=${newStatus}`
