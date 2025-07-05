@@ -55,7 +55,12 @@ $result = $stmt->get_result();
                 <td><?= htmlspecialchars($row['title']) ?></td>
                 <td><?= htmlspecialchars($row['description']) ?></td>
                 <td><?= htmlspecialchars($row['email']) ?></td>
-                <td><button class="btn btn-primary btn-sm">Edit</button></td>
+		<td>
+		    <form method="post" action="/frontend/admin/admin-edit-task.php" style="display:inline;">
+		        <input type="hidden" name="task_id" value="<?= htmlspecialchars($row['task_id']) ?>">
+		        <button class="btn btn-primary btn-sm">Edit</button>
+		    </form>
+		</td>
 		<td>
 		    <form method="post" action="/backend/toggle-task.php" style="display:inline;">
 			<input type="hidden" name="task_id" value="<?= htmlspecialchars($row['task_id']) ?>">
