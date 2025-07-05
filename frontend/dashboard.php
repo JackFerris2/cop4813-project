@@ -66,28 +66,16 @@ $conn->close();
         $statuses = ['not_started' => 'To Do', 'in_progress' => 'In Progress', 'completed' => 'Done'];
         foreach ($statuses as $key => $label): ?>
             <div class="col-md-4">
-                <h3><?= $label ?></h3>
-                <div class="bg-light border rounded p-3 task-column" id="<?= $key ?>">
+                <h3><?= htmlspecialchars($label) ?></h3>
+                <div class="bg-light border rounded p-3 task-column" id="<?= htmlspecialchars($key) ?>">
                     <?php foreach ($tasks[$key] as $task): ?>
-                        <div class="card mb-2" draggable="true" data-id="<?= $task['id'] ?>">
+                        <div class="card mb-2" draggable="true" data-id="<?= htmlspecialchars($task['id'] ?? '') ?>">
                             <div class="card-body">
                                 <strong>
-                                    <?php
-                                    if ($task['censor']) {
-                                        echo "Censored";
-                                    } else {
-                                        echo htmlspecialchars($task['title']);
-                                    }
-                                    ?>
+                                    <?= $task['censor'] ? "Censored" : htmlspecialchars($task['title']) ?>
                                 </strong><br>
                                 <small>
-                                    <?php
-                                    if ($task['censor']) {
-                                        echo "This task has been censored by an administrator.";
-                                    } else {
-                                        echo htmlspecialchars($task['description']);
-                                    }
-                                    ?>
+                                    <?= $task['censor'] ? "This task has been censored by an administrator." : htmlspecialchars($task['description']) ?>
                                 </small>
                             </div>
                         </div>
@@ -126,7 +114,11 @@ document.querySelectorAll('.task-column').forEach(column => {
 
         const taskId = e.dataTransfer.getData("text/plain");
         const taskCard = document.querySelector(`.card[data-id='${taskId}']`);
-        column.appendChild(taskCard);
+
+        // Only move if it's a different column
+        if (!column.contains(taskCard)) {
+            column.appendChild(taskCard);
+        }
 
         const newStatus = column.id;
 
