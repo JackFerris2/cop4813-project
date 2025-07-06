@@ -43,7 +43,7 @@ if (!empty($taskID) && is_numeric($taskID)) {
     $msg->execute();
 
     // go to dashboard
-    header("Location: /frontend/admin/dashboard.php");
+    header("Location: /frontend/dashboard.php");
     $msg->close();
     exit;
 } else {
