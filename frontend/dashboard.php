@@ -103,12 +103,12 @@ $conn->close();
                                         <a href="/backend/edit-task.php?id=<?= $task['task_id'] ?>" title="Edit">
                                             <i class="bi bi-pencil-square text-dark icon-action"></i>
                                         </a>
-                                    <form action="/backend/delete-task.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this task?');" class="d-inline">
-                                        <input type="hidden" name="task_id" value="<?= $task['task_id'] ?>">
-                                        <button type="submit" class="btn p-0 border-0 bg-transparent" title="Delete">
-                                            <i class="bi bi-trash text-dark icon-action"></i>
-                                        </button>
-                                    </form>
+                                        <form action="/backend/delete-task.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this task?');" class="d-inline">
+                                            <input type="hidden" name="task_id" value="<?= $task['task_id'] ?>">
+                                            <button type="submit" class="btn p-0 border-0 bg-transparent" title="Delete">
+                                                <i class="bi bi-trash text-dark icon-action"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -126,10 +126,19 @@ $conn->close();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-// Drag-and-drop logic
+// Highlight card on click
+document.querySelectorAll('.task-card').forEach(card => {
+    card.addEventListener('click', function (e) {
+        if (e.target.closest('a') || e.target.closest('form')) return;
+        this.classList.toggle('selected');
+    });
+});
+
+// Add selection styling when dragging starts
 document.querySelectorAll('.card[draggable="true"]').forEach(card => {
     card.addEventListener('dragstart', e => {
         e.dataTransfer.setData("text/plain", card.dataset.id);
+        card.classList.add('selected'); // mark as selected during drag
     });
 });
 
@@ -154,9 +163,9 @@ document.querySelectorAll('.task-column').forEach(column => {
             column.appendChild(taskCard);
         }
 
-        const newStatus = column.id;
-        console.log(`Sending update: taskId=${taskId}, status=${newStatus}`);
+        taskCard.classList.remove('selected'); // clean up selection after drop
 
+        const newStatus = column.id;
         fetch('../backend/update-task-status.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -171,14 +180,6 @@ document.querySelectorAll('.task-column').forEach(column => {
             console.error(error);
             alert("Error contacting the server.");
         });
-    });
-});
-
-// Task selection toggle logic
-document.querySelectorAll('.task-card').forEach(card => {
-    card.addEventListener('click', function (e) {
-        if (e.target.closest('a') || e.target.closest('form')) return;
-        this.classList.toggle('selected');
     });
 });
 </script>
