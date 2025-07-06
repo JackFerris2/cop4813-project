@@ -5,8 +5,8 @@
 This is the updated Task Management System for our semester project in COP4813.
 The application allows users to create, view, edit, delete, and organize tasks through
 a drag-and-drop interface. It includes a responsive front-end interface,
-server-side PHP scripts, and a MySQL database to persist user and task data.
-This updated version also features and admin dashboard which is described below.
+server-side PHP scripts, and a MySQL database to facilitate persistent user and task data.
+This updated version also features an admin dashboard which is described below.
 
 The current version goes beyond the initial MVP and delivers on the design and goals
 outlined in our system proposal.
@@ -40,9 +40,9 @@ This demonstrates full communication between the front-end UI, PHP back-end, and
 
 ### Admin Capabilities 
 The system now includes a dedicated admin interface for managing users and tasks.
-Admins can log in via a provided admin email and password, view all registered users,
-edit or delete any task in the system (regardless of owner), flag tasks that violate guidelines,
-give admin privileges to another account, and delete accounts altogether.
+Admins can log into the website as normal and access the admin tools through the navigation bar. 
+Admins also have the ability to edit or delete any task in the system (regardless of owner) and flag tasks that violate guidelines so that their contents is hidden on a normal user dashboard.
+They can also view and edit all registered users, grant other users admin privileges, and delete accounts altogether.
 
 These features provide oversight and control, supporting administrative intervention when needed.
 
@@ -57,7 +57,7 @@ We used a MySQL database hosted on an AWS lightsail server.
 - Users contain `user_id`, `name`, `email`, `pw_hash`, and a `created` timestamp
 - Tasks contain `task_id`, `user_id`, `title`, `description`, `status`, `estimated_hr`, `due`, `priority`, `created` and `updated` timestamps
 
-A sample dummy users (`taskmanager` and `webuser`) were created with restricted access to allow 
+Database users (`taskmanager` and `webuser`) were created with restricted access to allow 
 form submissions without compromising root credentials.
 
 ---
