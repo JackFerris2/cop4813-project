@@ -45,6 +45,7 @@ $conn->close();
     <meta charset="UTF-8">
     <title>Task Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .task-column {
             min-height: 300px;
@@ -52,6 +53,24 @@ $conn->close();
         .task-column.drag-over {
             background-color: #f1f1f1;
             border: 2px dashed #007bff;
+        }
+        .card.selected {
+            border: 2px solid #0d6efd;
+            background-color: #e7f1ff;
+        }
+        .icon-action {
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+        .icon-actions {
+            display: flex;
+            gap: 12px;
+        }
+        form.d-inline {
+            display: inline;
+        }
+        button.bg-transparent {
+            outline: none;
         }
     </style>
 </head>
@@ -69,14 +88,29 @@ $conn->close();
                 <h3><?= htmlspecialchars($label) ?></h3>
                 <div class="bg-light border rounded p-3 task-column" id="<?= htmlspecialchars($key) ?>">
                     <?php foreach ($tasks[$key] as $task): ?>
-                        <div class="card mb-2" draggable="true" data-id="<?= htmlspecialchars($task['task_id']) ?>">
-                            <div class="card-body">
-                                <strong>
-                                    <?= $task['censor'] ? "Censored" : htmlspecialchars($task['title']) ?>
-                                </strong><br>
-                                <small>
-                                    <?= $task['censor'] ? "This task has been censored by an administrator." : htmlspecialchars($task['description']) ?>
-                                </small>
+                        <div class="card mb-2 task-card" draggable="true" data-id="<?= htmlspecialchars($task['task_id']) ?>">
+                            <div class="card-body d-flex flex-column">
+                                <div class="mb-2">
+                                    <strong>
+                                        <?= $task['censor'] ? "Censored" : htmlspecialchars($task['title']) ?>
+                                    </strong><br>
+                                    <small>
+                                        <?= $task['censor'] ? "This task has been censored by an administrator." : htmlspecialchars($task['description']) ?>
+                                    </small>
+                                </div>
+                                <?php if (!$task['censor']): ?>
+                                    <div class="mt-auto d-flex justify-content-end icon-actions">
+                                        <a href="/edit-task.php?id=<?= $task['task_id'] ?>" title="Edit">
+                                            <i class="bi bi-pencil-square text-dark icon-action"></i>
+                                        </a>
+                                        <form action="/delete-task.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this task?');" class="d-inline">
+                                            <input type="hidden" name="task_id" value="<?= $task['task_id'] ?>">
+                                            <button type="submit" class="btn p-0 border-0 bg-transparent" title="Delete">
+                                                <i class="bi bi-trash text-dark icon-action"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -92,6 +126,7 @@ $conn->close();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+// Drag-and-drop logic
 document.querySelectorAll('.card[draggable="true"]').forEach(card => {
     card.addEventListener('dragstart', e => {
         e.dataTransfer.setData("text/plain", card.dataset.id);
@@ -136,6 +171,14 @@ document.querySelectorAll('.task-column').forEach(column => {
             console.error(error);
             alert("Error contacting the server.");
         });
+    });
+});
+
+// Task selection toggle logic
+document.querySelectorAll('.task-card').forEach(card => {
+    card.addEventListener('click', function (e) {
+        if (e.target.closest('a') || e.target.closest('form')) return;
+        this.classList.toggle('selected');
     });
 });
 </script>
