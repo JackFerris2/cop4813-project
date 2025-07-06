@@ -104,11 +104,11 @@ $conn->close();
                                             <i class="bi bi-pencil-square text-dark icon-action"></i>
                                         </a>
                                     <form action="/backend/delete-task.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this task?');" class="d-inline">
-                                            <input type="hidden" name="task_id" value="<?= $task['task_id'] ?>">
-                                            <button type="submit" class="btn p-0 border-0 bg-transparent" title="Delete">
-                                                <i class="bi bi-trash text-dark icon-action"></i>
-                                            </button>
-                                        </form>
+                                        <input type="hidden" name="task_id" value="<?= $task['task_id'] ?>">
+                                        <button type="submit" class="btn p-0 border-0 bg-transparent" title="Delete">
+                                            <i class="bi bi-trash text-dark icon-action"></i>
+                                        </button>
+                                    </form>
                                     </div>
                                 <?php endif; ?>
                             </div>
