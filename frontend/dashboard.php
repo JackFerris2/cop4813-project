@@ -100,10 +100,10 @@ $conn->close();
                                 </div>
                                 <?php if (!$task['censor']): ?>
                                     <div class="mt-auto d-flex justify-content-end icon-actions">
-                                        <a href="/edit-task.php?id=<?= $task['task_id'] ?>" title="Edit">
+                                        <a href="/backend/edit-task.php?id=<?= $task['task_id'] ?>" title="Edit">
                                             <i class="bi bi-pencil-square text-dark icon-action"></i>
                                         </a>
-                                        <form action="/delete-task.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this task?');" class="d-inline">
+                                    <form action="/backend/delete-task.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this task?');" class="d-inline">
                                             <input type="hidden" name="task_id" value="<?= $task['task_id'] ?>">
                                             <button type="submit" class="btn p-0 border-0 bg-transparent" title="Delete">
                                                 <i class="bi bi-trash text-dark icon-action"></i>
