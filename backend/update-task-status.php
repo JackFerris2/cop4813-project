@@ -1,10 +1,10 @@
 <?php
 session_start();
 
-// Ensure user is logged in
+// active session check
+session_start();
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    http_response_code(403);
-    echo "Unauthorized";
+    header("Location: /index.php");
     exit;
 }
 
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $validStatuses = ['not_started', 'in_progress', 'completed'];
 
     if ($taskId && $status && in_array($status, $validStatuses)) {
-        $stmt = $pdo->prepare("UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?");
+        $stmt = $pdo->prepare("UPDATE tasks SET status = ? WHERE task_id = ? AND user_id = ?");
         $success = $stmt->execute([$status, $taskId, $_SESSION['user_id']]);
 
         if ($success) {

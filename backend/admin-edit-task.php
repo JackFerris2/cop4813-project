@@ -30,15 +30,6 @@ $taskDescription = $_POST['taskDescription'] ?? '';
 $taskStatus = $_POST['taskStatus'] ?? '';
 $userID = $_POST['taskOwner'] ?? '';
 
-// set status to enum in database
-/*if ($taskStatus === "todo") {
-	$status = "not_started";
-} elseif ($taskStatus === "inprogress"){
-	$status = "in_progress";
-} else {
-	$status = "completed";
-}*/
-
 // check if the passed information is empty
 if (!empty($taskID) && !empty($userID) && !empty($taskTitle) && !empty($taskDescription) && !empty($taskStatus)) {
 

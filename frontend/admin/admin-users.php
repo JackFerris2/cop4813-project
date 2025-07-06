@@ -59,7 +59,7 @@ $result = $stmt->get_result();
 		<td><?= $row['admin'] ? 'Yes' : 'No' ?></td>
 		<td><?= $row['active'] ? 'Active' : 'Inactive' ?></td>
                 <td>
-                    <form method="post" action="/backend/toggle-user.php" style="display:inline;">
+                    <form method="post" action="/backend/admin-toggle-user.php" style="display:inline;">
                         <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['user_id']) ?>">
                         <button type="submit" class="btn btn-warning btn-sm">
                             <?= $row['active'] ? 'Deactivate' : 'Activate' ?>
@@ -67,7 +67,7 @@ $result = $stmt->get_result();
                     </form>
                 </td>
 		<td>
-                    <form method="post" action="/backend/toggle-admin.php" style="display:inline;">
+                    <form method="post" action="/backend/admin-toggle-admin.php" style="display:inline;">
                         <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['user_id']) ?>">
                         <button type="submit" class="btn btn-warning btn-sm">
                             <?= $row['admin'] ? 'Remove Admin' : 'Make Admin' ?>
@@ -75,12 +75,12 @@ $result = $stmt->get_result();
                     </form>
                 </td>
 		<td>
-		    <form method="post" action="/frontend/users/edit-user.php" style="display:inline;">
+		    <form method="post" action="/frontend/admin/admin-edit-user.php" style="display:inline;">
 		        <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['user_id']) ?>">
 			<button type="submit" class="btn btn-primary btn-sm">Edit</button>
 		    </form>
 		<td>
-                    <form method="post" action="/backend/delete-user.php" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                    <form method="post" action="/backend/admin-delete-user.php" style="display:inline;" onsubmit="return confirm('Are you sure?');">
                         <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['user_id']) ?>">
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>

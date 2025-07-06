@@ -46,7 +46,7 @@ $result = $stmt->get_result();
             <th>Title</th>
             <th>Description</th>
 	    <th>User</th>
-            <th colspan="2">Actions</th>
+            <th colspan="3">Actions</th>
         </tr>
         </thead>
 	<tbody>
@@ -62,11 +62,17 @@ $result = $stmt->get_result();
 		    </form>
 		</td>
 		<td>
-		    <form method="post" action="/backend/toggle-task.php" style="display:inline;">
+		    <form method="post" action="/backend/admin-toggle-task.php" style="display:inline;">
 			<input type="hidden" name="task_id" value="<?= htmlspecialchars($row['task_id']) ?>">
 			<button class="btn btn-warning btn-sm">
 		            <?= $row['censor'] ? 'Unflag' : 'Flag' ?>
 		        </button>
+		    </form>
+		</td>
+		<td>
+		    <form method="post" action="/backend/admin-delete-task.php" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+			<input type="hidden" name="task_id" value="<?= htmlspecialchars($row['task_id']) ?>">
+		        <button class="btn btn-danger btn-sm">Delete</button>
 		    </form>
 		</td>
             </tr>

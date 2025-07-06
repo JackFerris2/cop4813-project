@@ -62,7 +62,7 @@ $result = $stmt->get_result();
 <?php include __DIR__ . '/../navbar.php'; ?>
 <div class="container">
     <h1>Edit Task</h1>
-    <form method="POST" action="/backend/edit-admintask.php">
+    <form method="POST" action="/backend/admin-edit-task.php">
 	<div class="mb-3">
 	    <input type="hidden" name="task_id" value="<?= htmlspecialchars($taskID) ?>">
 	</div>
@@ -92,10 +92,12 @@ $result = $stmt->get_result();
 			</option>
                 <?php endwhile; ?>
             </select>
+	</div>
+	<div class="mt=d d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+	    <a href="/frontend/admin/admin-tasks.php" class="btn btn-secondary ms-2">Cancel</a>
         </div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <a href="/frontend/admin/admin-tasks.php" class="btn btn-secondary ms-2">Cancel</a>
     </form>
-</div>
+</div>	
 </body>
 </html>

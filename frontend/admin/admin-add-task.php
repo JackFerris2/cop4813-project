@@ -39,7 +39,7 @@ $result = $stmt->get_result();
 
 <div class="container">
     <h1 class="mb-4">Add Task (Admin Only)</h1>
-    <form method="POST" action="/backend/add-admintask.php">
+    <form method="POST" action="/backend/admin-add-task.php">
         <div class="mb-3">
             <label for="taskTitle" class="form-label">Task Title</label>
             <input type="text" class="form-control" id="taskTitle" name="taskTitle" required placeholder="Enter title">

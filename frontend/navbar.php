@@ -10,7 +10,9 @@
         <li class="nav-item">
           <a class="nav-link" href="/frontend/tasks/create-task.php">Add Task</a>
         </li>
-        
+        <li class="nav-item">
+          <a class="nav-link" href="/frontend/dashboard.php">Dashboard</a>
+        </li>
 
         <!-- Show these links only if user is admin -->
         <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == true): ?>

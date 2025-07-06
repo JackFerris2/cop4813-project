@@ -69,7 +69,7 @@ $conn->close();
                 <h3><?= htmlspecialchars($label) ?></h3>
                 <div class="bg-light border rounded p-3 task-column" id="<?= htmlspecialchars($key) ?>">
                     <?php foreach ($tasks[$key] as $task): ?>
-                        <div class="card mb-2" draggable="true" data-id="<?= htmlspecialchars($task['id'] ?? '') ?>">
+                        <div class="card mb-2" draggable="true" data-id="<?= htmlspecialchars($task['task_id']) ?>">
                             <div class="card-body">
                                 <strong>
                                     <?= $task['censor'] ? "Censored" : htmlspecialchars($task['title']) ?>

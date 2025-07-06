@@ -29,14 +29,14 @@ if (!empty($email) && !empty($password)) {
 	$msg->bind_result($user_id, $user_pwh, $user_admin, $active);
 
 	// compare hashed pw
-	if($msg->fetch()) {
-		// check if account is active
-		if ($active == False) {
-			header("Location: /frontend/login.php?error=inactive");
-			exit;
-		}
-		
+	if($msg->fetch()) {	
 		if (password_verify($password, $user_pwh)) {
+			// check if account is active
+			if ($active == False) {
+				header("Location: /frontend/login.php?error=inactive");
+				exit;
+			}
+			
 			// Set Session and go to dashboard
 			$_SESSION['user_id'] = $user_id;
 			$_SESSION['user_email'] = $email;
@@ -58,7 +58,7 @@ if (!empty($email) && !empty($password)) {
 			// bad credentials redirect to login with invalid credential error
 			header("Location: /frontend/login.php?error=invalid");
 			exit;
-		}
+		}	
 	} else {
 		header("Location: /frontend/login.php?error=invalid");
 		exit;

@@ -52,7 +52,7 @@ $conn->close();
 <?php include __DIR__ . '/../navbar.php'; ?>
 <div class="container">
     <h1>Edit an Existing User</h1>
-    <form method="POST" action="/backend/edit-user.php">
+    <form method="POST" action="/backend/admin-edit-user.php">
 	 <div class="mb-3">
             <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user['user_id']); ?>">
         </div>
