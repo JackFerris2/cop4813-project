@@ -23,35 +23,23 @@ if ($conn->connect_error) {
 }
 
 // get total users
-$result = $conn->query("SELECT COUNT(*) AS total FROM users");
-if ($result) {
-	$row = $result->fetch_assoc();
-	$userCount = $row['total'];
-} else {
-	die("Error: " . $conn->error);
-}
+$userCount = $conn->query("SELECT COUNT(*) AS total FROM users")->fetch_assoc()['total'] ?? 0;
 
 // get active users
-$result = $conn->query("SELECT COUNT(*) AS active FROM users WHERE active = 1");
-if ($result) {
-	$row = $result->fetch_assoc();
-	$activeCount = $row['active'];
-} else {
-	die("Error: " . $conn->error);
-}
+$activeCount = $conn->query("SELECT COUNT(*) AS active FROM users WHERE active = 1")->fetch_assoc()['active'] ?? 0;
+$inactiveCount = $userCount - $activeCount;
 
-// set default histogram period
-$group = $_GET['group'] ?? '';
+// histogram group
+$group = strtolower($_GET['group'] ?? 'day');
 
-// set SQL quety based on period
+// SQL by period
 switch ($group) {
-    case 'Week':
+    case 'week':
         $sql = "SELECT YEARWEEK(created, 1) AS period, COUNT(*) AS count FROM users GROUP BY period ORDER BY period";
         break;
-    case 'Month':
+    case 'month':
         $sql = "SELECT DATE_FORMAT(created, '%Y-%m') AS period, COUNT(*) AS count FROM users GROUP BY period ORDER BY period";
         break;
-    case 'Day':
     default:
         $sql = "SELECT DATE(created) AS period, COUNT(*) AS count FROM users GROUP BY period ORDER BY period";
         break;
@@ -60,93 +48,119 @@ switch ($group) {
 $result = $conn->query($sql);
 $startDates = [];
 
-// format dates and put in startDates 
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         if ($group === 'week') {
             $yearWeek = $row['period'];
             $year = substr($yearWeek, 0, 4);
             $week = substr($yearWeek, 4);
-            $date = (new DateTime())->setISODate($year, $week)->format('Y-\WW');
-            $row['period'] = $date;
+            $row['period'] = (new DateTime())->setISODate($year, $week)->format('Y-\WW');
         }
         $startDates[] = $row;
     }
 }
 
-// encode in JSON
 $time = array_column($startDates, 'period');
 $count = array_column($startDates, 'count');
-
 $jsTime = json_encode($time);
 $jsCount = json_encode($count);
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>User Statistics</title>    
+    <title>User Statistics</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="p-4">
+<body class="p-4 bg-light">
 
 <?php include '/frontend/navbar.php'; ?>
 
 <div class="container">
-    <h1>User Statistics</h1>
-    <p>
-        <?php echo "Total Users: " . htmlspecialchars($userCount); ?><br>
-        <?php echo "Active Users: " . htmlspecialchars($activeCount); ?><br>
-        <?php echo "Inactive Users: " . htmlspecialchars($userCount - $activeCount); ?>
-    </p>
-    <!-- Select time distribution -->
-    <div class="btn-group mb-3" role="group">
+    <h1 class="mb-4">User Statistics</h1>
+
+    <!-- Stats cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <p class="card-text fw-bold text-primary"><?php echo htmlspecialchars($userCount); ?></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Active Users</h5>
+                    <p class="card-text fw-bold text-success"><?php echo htmlspecialchars($activeCount); ?></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Inactive Users</h5>
+                    <p class="card-text fw-bold text-danger"><?php echo htmlspecialchars($inactiveCount); ?></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Time filter buttons -->
+    <div class="btn-group mb-4" role="group">
         <a href="?group=Day" class="btn btn-outline-primary <?php echo $group == 'day' ? 'active' : ''; ?>">Day</a>
         <a href="?group=Week" class="btn btn-outline-primary <?php echo $group == 'week' ? 'active' : ''; ?>">Week</a>
         <a href="?group=Month" class="btn btn-outline-primary <?php echo $group == 'month' ? 'active' : ''; ?>">Month</a>
     </div>
 
-    <!-- Chart dimensions --->
-    <canvas id="startdateChart"></canvas>
-
-    <!-- Chart Code -->
-    <script>
-	const ctx = document.getElementById('startdateChart').getContext('2d');
-	const signupChart = new Chart(ctx, {
-	    type: 'bar',
-	    data: {
-		labels: <?php echo $jsTime; ?>,
-		datasets: [{
-		    label: 'New Users',
-		    data: <?php echo $jsCount; ?>,
-		    backgroundColor: 'rgba(20, 85, 255, .75)' // this color seems to match the blue
-		}]
-	    },
-	    options: {
-		responsive: true,
-		scales: {
-		    x: {
-			title: {
-			    display: true,
-			    text: 'Signup <?php echo $group; ?>'
-			}
-		    },
-		    y: {
-			beginAtZero: true,
-			title: {
-			    display: true,
-			    text: 'New Accounts'
-			}
-		    }
-		}
-	    }
-	});
-	</script>
+    <!-- Chart container -->
+    <div class="mb-5">
+        <h4>New User Registrations</h4>
+        <canvas id="startdateChart" height="100"></canvas>
     </div>
-    <a href="/frontend/admin/admin-dashboard.php" class="btn btn-secondary ms-2">Dashboard</a>
+
+    <a href="/frontend/admin/admin-dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+<!-- Chart JS -->
+<script>
+const ctx = document.getElementById('startdateChart').getContext('2d');
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: <?php echo $jsTime; ?>,
+        datasets: [{
+            label: 'New Users',
+            data: <?php echo $jsCount; ?>,
+            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+            borderColor: '#007bff',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            title: {
+                display: true,
+                text: 'New Users by <?php echo ucfirst($group); ?>'
+            }
+        },
+        scales: {
+            x: {
+                title: { display: true, text: 'Time' }
+            },
+            y: {
+                beginAtZero: true,
+                title: { display: true, text: 'User Count' }
+            }
+        }
+    }
+});
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
