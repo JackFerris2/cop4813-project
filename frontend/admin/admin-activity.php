@@ -45,7 +45,7 @@ while ($row = $statusResult->fetch_assoc()) {
 }
 
 // time-based trends
-$trendResult = $conn->query("SELECT DATE(created_at) AS day, COUNT(*) AS count FROM tasks GROUP BY day ORDER BY day ASC");
+$trendResult = $conn->query("SELECT DATE(created) AS day, COUNT(*) AS count FROM tasks GROUP BY day ORDER BY day ASC");
 $taskDates = [];
 $taskCounts = [];
 while ($row = $trendResult->fetch_assoc()) {

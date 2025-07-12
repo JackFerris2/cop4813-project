@@ -93,7 +93,7 @@ if ($result) {
 }
 
 // get total complete tasks
-$result = $conn->query("SELECT COUNT(*) AS complete FROM tasks WHERE status = 'complete'");
+$result = $conn->query("SELECT COUNT(*) AS complete FROM tasks WHERE status = 'completed'");
 if ($result) {
         $row = $result->fetch_assoc();
         $taskCompleteCount = $row['complete'];
