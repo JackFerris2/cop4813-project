@@ -1,62 +1,59 @@
 <?php
-// Enable error reporting
+// Enable errors
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// Auth checks
 session_start();
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: /index.php");
-    exit;
-}
-if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != true) {
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != true) {
     header("Location: /index.php");
     exit;
 }
 
-// Handle filters
-$timeFrame = $_GET['time'] ?? 'all';
-$userRole = $_GET['role'] ?? 'all';
+// Filter GET
+$timeFilter = $_GET['time'] ?? 'all';
 
-$logPath = '/var/log/apache2/access.log';
-$visits = [];
-
-$pageTitles = [
-    '/frontend/admin/admin-analytics.php' => 'Analytics',
-    '/frontend/admin/admin-dashboard.php' => 'Admin Dashboard',
-    '/frontend/dashboard.php' => 'User Dashboard',
-    '/frontend/login.php' => 'Login Page',
+// Define readable names
+$pageNameMap = [
     '/' => 'Homepage',
-    '/favicon.ico' => 'Favicon',
-    '/.env' => 'Environment File',
+    '/index.php' => 'Homepage',
+    '/frontend/login.php' => 'Login Page',
+    '/frontend/dashboard.php' => 'User Dashboard',
+    '/frontend/admin/admin-dashboard.php' => 'Admin Dashboard',
+    '/frontend/admin/admin-analytics.php' => 'Analytics',
+    '/frontend/admin/admin-users.php' => 'User Management',
+    '/frontend/admin/admin-tasks.php' => 'Task Moderation',
 ];
 
+// Parse log
+$logPath = '/var/log/apache2/access.log';
+$pageCounts = [];
+
 if (is_readable($logPath)) {
-    $lines = file($logPath);
-    $now = time();
+    $lines = file($logPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
     foreach ($lines as $line) {
-        if (!preg_match('/\[(.*?)\] \"GET (.*?) HTTP/', $line, $matches)) continue;
+        if (!preg_match('#\[(.*?)\] "GET (.*?) HTTP#', $line, $matches)) continue;
 
-        $timestamp = strtotime(str_replace('/', ' ', $matches[1]));
-        $uri = strtok($matches[2], '?');
+        $timestamp = strtotime($matches[1]);
+        $path = parse_url($matches[2], PHP_URL_PATH);
 
-        // Filter by time
-        if ($timeFrame === 'today' && date('Y-m-d', $timestamp) !== date('Y-m-d')) continue;
-        if ($timeFrame === 'week' && $now - $timestamp > 7 * 24 * 60 * 60) continue;
+        if ($timeFilter === 'today' && date('Y-m-d', $timestamp) !== date('Y-m-d')) continue;
+        if ($timeFilter === 'week' && date('o-W', $timestamp) !== date('o-W')) continue;
 
-        // Only track known pages or label as "Other"
-        $label = $pageTitles[$uri] ?? $uri;
-        $visits[$label] = ($visits[$label] ?? 0) + 1;
+        $cleanPath = strtok($path, '?');
+        if (!$cleanPath) continue;
+
+        $pageCounts[$cleanPath] = ($pageCounts[$cleanPath] ?? 0) + 1;
     }
 
-    arsort($visits);
-} else {
-    $visits = null;
+    arsort($pageCounts);
+    $pageCounts = array_slice($pageCounts, 0, 10, true);
 }
 
-$labels = json_encode(array_keys($visits ?? []));
-$counts = json_encode(array_values($visits ?? []));
+$jsLabels = json_encode(array_map(fn($p) => $pageNameMap[$p] ?? $p, array_keys($pageCounts)));
+$jsCounts = json_encode(array_values($pageCounts));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -67,53 +64,45 @@ $counts = json_encode(array_values($visits ?? []));
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="p-4">
-<?php include '../navbar.php'; ?>
-<a href="admin-dashboard.php" class="btn btn-secondary mb-4">Back to Dashboard</a>
+<?php include __DIR__ . '/../navbar.php'; ?>
+<a href="/frontend/admin/admin-dashboard.php" class="btn btn-secondary mb-3">Back to Dashboard</a>
+
 <div class="container">
     <h1 class="mb-4">Most Visited Pages</h1>
 
     <form method="get" class="row g-3 mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label for="time" class="form-label">Time Frame</label>
-            <select class="form-select" name="time" id="time">
-                <option value="all" <?= $timeFrame === 'all' ? 'selected' : '' ?>>All</option>
-                <option value="today" <?= $timeFrame === 'today' ? 'selected' : '' ?>>Today</option>
-                <option value="week" <?= $timeFrame === 'week' ? 'selected' : '' ?>>This Week</option>
+            <select id="time" name="time" class="form-select">
+                <option value="all" <?= $timeFilter === 'all' ? 'selected' : '' ?>>All</option>
+                <option value="today" <?= $timeFilter === 'today' ? 'selected' : '' ?>>Today</option>
+                <option value="week" <?= $timeFilter === 'week' ? 'selected' : '' ?>>This Week</option>
             </select>
         </div>
-        <div class="col-md-4">
-            <label for="role" class="form-label">User Role</label>
-            <select class="form-select" name="role" id="role">
-                <option value="all" <?= $userRole === 'all' ? 'selected' : '' ?>>All Users</option>
-                <option value="admin" <?= $userRole === 'admin' ? 'selected' : '' ?>>Admins Only</option>
-                <option value="regular" <?= $userRole === 'regular' ? 'selected' : '' ?>>Regular Users</option>
-            </select>
-        </div>
-        <div class="col-md-4 align-self-end">
-            <button class="btn btn-primary w-100" type="submit">Apply Filters</button>
+        <div class="col-md-3 align-self-end">
+            <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
         </div>
     </form>
 
-    <?php if ($visits === null): ?>
-        <div class="alert alert-warning">No access log data available or insufficient permissions.</div>
-    <?php elseif (empty($visits)): ?>
-        <div class="alert alert-info">No visits found for the selected filter.</div>
+    <?php if (!empty($pageCounts)): ?>
+        <canvas id="visitsChart" height="100"></canvas>
     <?php else: ?>
-        <canvas id="trafficChart" height="100"></canvas>
+        <div class="alert alert-warning">No access log data available or insufficient permissions.</div>
     <?php endif; ?>
 </div>
+
+<?php if (!empty($pageCounts)): ?>
 <script>
-<?php if (!empty($visits)): ?>
-const ctx = document.getElementById('trafficChart').getContext('2d');
+const ctx = document.getElementById('visitsChart').getContext('2d');
 new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: <?= $labels ?>,
+        labels: <?= $jsLabels ?>,
         datasets: [{
             label: 'Visits',
-            data: <?= $counts ?>,
-            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-            borderColor: 'rgba(54, 162, 235, 1)',
+            data: <?= $jsCounts ?>,
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: '#007bff',
             borderWidth: 1
         }]
     },
@@ -138,7 +127,8 @@ new Chart(ctx, {
         }
     }
 });
-<?php endif; ?>
 </script>
+<?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
