@@ -29,6 +29,8 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != true) {
         <li class="list-group-item"><a href="admin-tasks.php">Task Moderation</a></li>
 	<li class="list-group-item"><a href="admin-add-task.php">Admin Task Entry</a></li>
 	<li class="list-group-item"><a href="admin-analytics.php">Analytics</a></li>
+	<li class="list-group-item"><a href="admin-page-traffic.php">Page Traffic (Most Visited Pages)</a></li>
+
 	<!-- These pages are being combined into Admin Adnalytics
 	<li class="list-group-item"><a href="old/admin-user-stat.php">User Statistics</a></li>
 	<li class="list-group-item"><a href="old/admin-activity.php">Activity Overview</a></li>
