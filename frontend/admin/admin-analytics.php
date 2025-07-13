@@ -210,6 +210,32 @@ $jsTTrendCounts = json_encode($taskCounts);
 $jsTTrendDates = json_encode($taskDates);
 $jsTTrendDateCounts = json_encode($taskCounts);
 
+// =====================
+// Apache Logs: Top Pages
+// =====================
+$logPath = '/var/log/apache2/access.log';
+$pageHits = [];
+
+if (file_exists($logPath)) {
+    $lines = file($logPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (preg_match('/"GET\s+([^"]+)\s+HTTP/', $line, $matches)) {
+            $path = parse_url($matches[1], PHP_URL_PATH);
+            if ($path) {
+                $pageHits[$path] = ($pageHits[$path] ?? 0) + 1;
+            }
+        }
+    }
+
+    arsort($pageHits);
+    $topPages = array_slice($pageHits, 0, 10, true);
+
+    $chartLabels = json_encode(array_keys($topPages));
+    $chartData = json_encode(array_values($topPages));
+} else {
+    $chartLabels = json_encode([]);
+    $chartData = json_encode([]);
+}
 
 function makeGet($key, $value) {
     $query = $_GET;
@@ -275,6 +301,13 @@ function makeGet($key, $value) {
         </div>
         <canvas id="startdateChart" height="100"></canvas>
     </div>
+    // most visited pages
+    <!-- Most Visited Pages Chart -->
+    <div class="mb-5">
+        <h4>Most Visited Pages (Apache Logs)</h4>
+        <canvas id="pageVisitsChart"></canvas>
+    </div>
+
 </div>
 
 <!-- Chart JS -->
@@ -444,6 +477,39 @@ new Chart(ctx, {
             }
         }
     });
+
+    const pageCtx = document.getElementById('pageVisitsChart')?.getContext('2d');
+    if (pageCtx) {
+        new Chart(pageCtx, {
+            type: 'bar',
+            data: {
+                labels: <?php echo $jsPagePaths; ?>,
+                datasets: [{
+                    label: 'Page Views',
+                    data: <?php echo $jsPageCounts; ?>,
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                    borderColor: '#ff6384',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Most Visited Pages'
+                    }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Page' } },
+                    y: { title: { display: true, text: 'Hits' }, beginAtZero: true }
+                }
+            }
+        });
+    }
+
+
 
 </script>
 
