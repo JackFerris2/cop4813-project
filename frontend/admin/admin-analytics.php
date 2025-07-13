@@ -381,11 +381,11 @@ new Chart(ctx, {
             <h4>Tasks by Status</h4>
         <div class="mx-auto" style="max-width: 500px;">
             <div class="mb-5">
-              <h4>Tasks by Status</h4>
-              <div class="mx-auto" style="max-width: 500px;">
-                <canvas id="taskStatusChart"></canvas>
-              </div>
+                <div class="mx-auto" style="max-width: 500px;">
+                    <canvas id="taskStatusChart"></canvas>
+                </div>
             </div>
+
         </div>
 </div>    </div>
 </div>
