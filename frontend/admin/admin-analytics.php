@@ -210,37 +210,6 @@ $jsTTrendCounts = json_encode($taskCounts);
 $jsTTrendDates = json_encode($taskDates);
 $jsTTrendDateCounts = json_encode($taskCounts);
 
-// Apache Log Parsing for Most Visited Pages
-$logFile = '/var/log/apache2/access.log';  // Adjust path if needed
-
-$pageVisits = [];
-
-if (file_exists($logFile) && is_readable($logFile)) {
-    $lines = file($logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
-    foreach ($lines as $line) {
-        // Match: GET /frontend/xyz.php
-        if (preg_match('/GET\s(\/frontend\/[^\s]+)\s/', $line, $matches)) {
-            $path = $matches[1];
-            if (!isset($pageVisits[$path])) {
-                $pageVisits[$path] = 0;
-            }
-            $pageVisits[$path]++;
-        }
-    }
-
-    // Sort descending, take top 10
-    arsort($pageVisits);
-    $topPages = array_slice($pageVisits, 0, 10, true);
-
-    $chartLabels = json_encode(array_keys($topPages));
-    $chartData = json_encode(array_values($topPages));
-} else {
-    $chartLabels = json_encode([]);
-    $chartData = json_encode([]);
-}
-
-
 
 function makeGet($key, $value) {
     $query = $_GET;
@@ -475,55 +444,7 @@ new Chart(ctx, {
             }
         }
     });
-<!-- Most Visited Pages -->
-<hr class="my-5">
-<h1 class="mb-4">Most Visited Pages</h1>
-<p>This chart shows the most frequently visited frontend pages.</p>
 
-<div class="mx-auto mb-5" style="max-width: 700px;">
-  <canvas id="mostVisitedChart"></canvas>
-</div>
-
-<script>
-const visitedCtx = document.getElementById('mostVisitedChart').getContext('2d');
-new Chart(visitedCtx, {
-    type: 'bar',
-    data: {
-        labels: <?php echo $chartLabels; ?>,
-        datasets: [{
-            label: 'Visits',
-            data: <?php echo $chartData; ?>,
-            backgroundColor: 'rgba(40, 167, 69, 0.6)',
-            borderColor: 'rgba(40, 167, 69, 1)',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: { display: false },
-            title: {
-                display: true,
-                text: 'Top 10 Visited Pages'
-            }
-        },
-        scales: {
-            x: {
-                title: { display: true, text: 'Page URL' },
-                ticks: {
-                    callback: function(value) {
-                        const label = this.getLabelForValue(value);
-                        return label.length > 30 ? label.slice(0, 30) + '...' : label;
-                    }
-                }
-            },
-            y: {
-                beginAtZero: true,
-                title: { display: true, text: 'Visit Count' }
-            }
-        }
-    }
-});
 </script>
 
 
