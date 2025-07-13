@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-// active session check
-session_start();
-=======
 // Enable error reporting
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -14,7 +10,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Auth checks
->>>>>>> a2641fe5990d0c679d4e824936b6f3b4c3a107fc
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: /index.php");
     exit;
