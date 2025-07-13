@@ -1,46 +1,53 @@
 <?php
-// Enable error reporting
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
+// Secure session and admin check
 session_start();
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != true) {
     header("Location: /index.php");
     exit;
 }
 
-$timeFilter = $_GET['time'] ?? 'all';
-$logFile = '/var/log/apache2/access.log';
-$pageCounts = [];
+// Whitelisted pages and labels
+$pageMap = [
+    '/frontend/index.php' => 'Home',
+    '/frontend/login.php' => 'Login',
+    '/frontend/dashboard.php' => 'Dashboard',
+    '/frontend/tasks/create-task.php' => 'Create Task',
+    '/frontend/tasks/edit-task.php' => 'Edit Task',
+    '/frontend/admin/admin-dashboard.php' => 'Admin Dashboard',
+    '/frontend/admin/admin-analytics.php' => 'Analytics',
+    '/frontend/admin/admin-users.php' => 'User Management',
+    '/frontend/admin/admin-tasks.php' => 'Task Moderation',
+    '/frontend/admin/admin-page-traffic.php' => 'Traffic Report'
+];
 
-if (file_exists($logFile) && is_readable($logFile)) {
-    $lines = file($logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (!preg_match('/\[(.*?)\] "(GET|POST) (.*?) HTTP\//', $line, $matches)) continue;
+$logPath = '/var/log/apache2/access.log';
+$visitCounts = [];
 
-        $datetime = DateTime::createFromFormat('d/M/Y:H:i:s O', $matches[1]);
-        if (!$datetime) continue;
+if (is_readable($logPath)) {
+    $logLines = file($logPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
-        if ($timeFilter === 'today' && $datetime->format('Y-m-d') !== date('Y-m-d')) continue;
-        if ($timeFilter === 'week' && $datetime < (new DateTime('-7 days'))) continue;
+    foreach ($logLines as $line) {
+        preg_match('/"GET (.*?) HTTP/', $line, $matches);
+        if (!isset($matches[1])) continue;
 
-        $path = parse_url($matches[3], PHP_URL_PATH);
-        if (!$path || !is_string($path)) continue;
+        $url = strtok($matches[1], '?'); // Strip query params
 
-        $cleanPath = strtok((string)$path, '?');
-        if (!$cleanPath) continue;
-
-        $pageCounts[$cleanPath] = ($pageCounts[$cleanPath] ?? 0) + 1;
+        // Only count known pages
+        if (isset($pageMap[$url])) {
+            $label = $pageMap[$url];
+            if (!isset($visitCounts[$label])) {
+                $visitCounts[$label] = 0;
+            }
+            $visitCounts[$label]++;
+        }
     }
 }
 
-arsort($pageCounts);
-$topPages = array_slice($pageCounts, 0, 10, true);
-$jsLabels = json_encode(array_keys($topPages));
-$jsCounts = json_encode(array_values($topPages));
+arsort($visitCounts);
+$topPages = array_slice($visitCounts, 0, 10, true);
+$pageLabels = json_encode(array_keys($topPages));
+$pageCounts = json_encode(array_values($topPages));
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,44 +57,26 @@ $jsCounts = json_encode(array_values($topPages));
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="p-4">
-<?php include __DIR__ . '/../navbar.php'; ?>
+
+<?php include '../navbar.php'; ?>
+
 <a href="/frontend/admin/admin-dashboard.php" class="btn btn-secondary mb-3">Back to Dashboard</a>
 
 <div class="container">
     <h2 class="mb-4">Most Visited Pages</h2>
 
-    <form method="get" class="row g-3 mb-4">
-        <div class="col-md-3">
-            <label for="time" class="form-label">Time Frame</label>
-            <select id="time" name="time" class="form-select">
-                <option value="all" <?= $timeFilter === 'all' ? 'selected' : '' ?>>All</option>
-                <option value="today" <?= $timeFilter === 'today' ? 'selected' : '' ?>>Today</option>
-                <option value="week" <?= $timeFilter === 'week' ? 'selected' : '' ?>>Last 7 Days</option>
-            </select>
-        </div>
-        <div class="col-md-3 align-self-end">
-            <button type="submit" class="btn btn-primary">Apply Filters</button>
-        </div>
-    </form>
-
-    <?php if (!empty($topPages)) : ?>
-        <div>
-            <canvas id="trafficChart" height="120"></canvas>
-        </div>
-    <?php else : ?>
-        <div class="alert alert-warning">No access log data available or insufficient permissions.</div>
-    <?php endif; ?>
+    <canvas id="visitChart" height="100"></canvas>
 </div>
 
 <script>
-const ctx = document.getElementById('trafficChart').getContext('2d');
+const ctx = document.getElementById('visitChart').getContext('2d');
 new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: <?= $jsLabels ?>,
+        labels: <?php echo $pageLabels; ?>,
         datasets: [{
             label: 'Visits',
-            data: <?= $jsCounts ?>,
+            data: <?php echo $pageCounts; ?>,
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1
@@ -109,22 +98,17 @@ new Chart(ctx, {
                     maxRotation: 45,
                     minRotation: 45
                 },
-                title: {
-                    display: true,
-                    text: 'Page'
-                }
+                title: { display: true, text: 'Page' }
             },
             y: {
                 beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Visits'
-                }
+                title: { display: true, text: 'Visits' }
             }
         }
     }
 });
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
