@@ -98,7 +98,7 @@ new Chart(ctx, {
                     maxRotation: 45,
                     minRotation: 45
                 },
-                title: { display: true, text: 'Page' }
+                title: { display: false } // <--- just this
             },
             y: {
                 beginAtZero: true,
