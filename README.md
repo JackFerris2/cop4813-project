@@ -43,7 +43,17 @@ Users can:
 - Delete tasks securely
 - View live task updates
 
-This shows full communication between the front-end, back-end, and MySQL database.
+This demonstrates full communication between the front-end UI, PHP back-end, and MySQL database.
+
+### Admin Capabilities 
+The system now includes a dedicated admin interface for managing users and tasks.
+Admins can log into the website as normal and access the admin tools through the navigation bar. 
+Admins also have the ability to edit or delete any task in the system (regardless of owner) and flag tasks that violate guidelines so that their contents is hidden on a normal user dashboard.
+They can also view and edit all registered users, grant other users admin privileges, and delete accounts altogether.
+
+There are also pages for user and task analytics as well as a page with information on page traffic.
+
+These features provide oversight, information, and control, supporting administrative intervention when needed.
 
 ---
 
