@@ -121,12 +121,11 @@ We used a MySQL database hosted on an AWS Lightsail server.
 
 - **Database name:** `taskmanagement`
 - **Tables:**
-    - `users`: Contains `user_id`, `name`, `email`, `pw_hash`, `created`, `is_admin`
-    - `tasks`: Contains `task_id`, `user_id`, `title`, `description`, `status`,
-    - `estimated_hr`, `due`, `priority`, `created`, `updated`, `censor`
+    - `users`: Contains `user_id`, `name`, `email`, `pw_hash`, `created`, `active`, `admin`
+    - `tasks`: Contains `task_id`, `user_id`, `title`, `description`, `status`, `estimated_hr`, `due`, `priority`, `created`, `updated`, `censor`, and `overwrite`
 
 Accounts are created with hashed passwords and stored securely.  
-Admin access is managed via the `is_admin` field.
+Admin access is managed via the `admin` field.
 
 ---
 
