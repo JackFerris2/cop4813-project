@@ -105,7 +105,7 @@ A separate tool, `admin-page-traffic.php`, analyzes real Apache access logs and 
 the **top 10 most visited pages** across the platform.
 
 Features:
-- Automatically filters out irrelevant file paths and noise from the apache logs to create the analytics.
+- Automatically filters out irrelevant file paths and noise from the logs
 - Converts route names into **friendly page labels** (e.g., "Admin Dashboard" instead of `admin-dashboard.php`)
 - Shows only real pages users or admins can visit
 - Light blue bar chart using Chart.js
