@@ -1,4 +1,8 @@
 <?php
+// error reporting
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 // active session check
 session_start();
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
@@ -15,6 +19,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="p-4">
+<?php include '/frontend/navbar.php' ?>
 <div class="container">
     <h1>Edit Task</h1>
     <form>
@@ -38,5 +43,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         <a href="../dashboard.php" class="btn btn-secondary ms-2">Cancel</a>
     </form>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
