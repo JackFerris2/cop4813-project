@@ -5,6 +5,11 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || !isset(
     header("Location: /index.php");
     exit;
 }
+// admin check
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != true) {
+    header("Location: /index.php");
+    exit;
+}
 
 // Whitelisted pages and labels
 $pageMap = [
