@@ -2,16 +2,13 @@
 
 ## Overview
 
-This is the updated Task Management System for our semester project in COP4813.  
+This is the final version of the Task Management System for our semester project in COP4813.  
 The application allows users to create, view, edit, delete, and organize tasks through  
 a drag-and-drop interface. It includes a responsive front-end interface,  
 server-side PHP scripts, and a MySQL database to store persistent user and task data.
 
-This updated version also features a secure admin dashboard with user management,  
-task moderation tools, and full analytics for tracking platform usage.
-
-The current version goes beyond the initial MVP and delivers on the design and goals  
-outlined in our system proposal.
+There are also tools for administrators to manage user and dask data as well as  
+view analytics for tracking platform usage.
 
 ---
 
@@ -71,11 +68,6 @@ Admins can:
 This gives admins full oversight and the ability to enforce platform guidelines.
 
 ---
-
-## New: Admin Analytics Features
-
-We introduced an entire **admin analytics** to support platform
-monitoring.
 
 ### Admin Analytics Tools
 
