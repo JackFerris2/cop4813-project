@@ -7,7 +7,7 @@ The application allows users to create, view, edit, delete, and organize tasks t
 a drag-and-drop interface. It includes a responsive front-end interface,  
 server-side PHP scripts, and a MySQL database to store persistent user and task data.
 
-There are also tools for administrators to manage user and dask data as well as  
+There are also tools for administrators to manage user and task data as well as  
 view analytics for tracking platform usage.
 
 ---
